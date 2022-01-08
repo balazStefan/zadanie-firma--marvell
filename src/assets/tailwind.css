@@ -1,0 +1,11 @@
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
+@layer components {
+  .link-navbar {
+    @apply m-2 p-4 bg-white justify-center no-underline self-center font-bold  cursor-pointer border-0 text-center text-gray-800;
+  }
+}
