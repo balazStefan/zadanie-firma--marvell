@@ -10,6 +10,11 @@
 </template>
 <script>
 export default {
+  data() {
+    return {
+      storedHeroes: [],
+    };
+  },
   computed: {
     getHeroes() {
       return this.$store.getters.favoriteHeroes.length;

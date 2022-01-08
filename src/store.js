@@ -6,7 +6,7 @@ const store = createStore({
     return {
       items: [],
       hero: [],
-      favoriteHeroes: [],
+      favoriteHeroes: JSON.parse(localStorage.getItem("favoriteHeroes")),
     };
   },
   getters: {
