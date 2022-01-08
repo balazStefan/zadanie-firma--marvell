@@ -31,7 +31,7 @@
   transform: translateY(0px);
 }
 body {
-  background-image: url(C:/Users/balaz/Desktop/firma/app/src/assets/background.jpg);
+  background-image: url("../src/assets/background.jpg");
   background-size: cover;
   background-repeat: no-repeat;
 }
