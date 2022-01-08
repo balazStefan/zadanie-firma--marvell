@@ -22,6 +22,7 @@
 </template>
 <script>
 import HeroItem from "./SearchItem.vue";
+import { mapGetters } from "vuex";
 
 export default {
   components: { HeroItem },
@@ -33,9 +34,10 @@ export default {
   },
 
   computed: {
-    items() {
-      return this.$store.getters.items;
-    },
+    // items() {
+    //   return this.$store.getters.items;
+    // },
+    ...mapGetters(["items"]),
   },
   methods: {
     async loadPage(id) {

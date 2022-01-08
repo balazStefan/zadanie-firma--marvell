@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
 import axios from "axios";
+import { LIMIT, API_URL } from "./constants.js";
 
 const store = createStore({
   state() {
@@ -50,20 +51,13 @@ const store = createStore({
   },
   actions: {
     async loadByName(context, payload) {
-      const query = payload;
-      const publicKey = process.env.VUE_APP_PUBLIC_KEY; // 2..
-      const API_URL = `https://gateway.marvel.com:443/v1/public/characters?nameStartsWith=${query}&limit=5&apikey=${publicKey}`;
-
-      const response = await axios.get(API_URL);
-
+      const reqURL = `${API_URL}?nameStartsWith=${payload}&limit=${LIMIT}&apikey=${process.env.VUE_APP_PUBLIC_KEY}`;
+      const response = await axios.get(reqURL);
       context.commit("setItem", response.data.data.results); //
     },
     async loadById(context, payload) {
-      const idHero = payload;
-      const publicKey = process.env.VUE_APP_PUBLIC_KEY;
-      const API_URL = `https://gateway.marvel.com:443/v1/public/characters/${idHero}?apikey=${publicKey}`;
-
-      const response = await axios.get(API_URL);
+      const reqURL = `${API_URL}/${payload}?apikey=${process.env.VUE_APP_PUBLIC_KEY}`;
+      const response = await axios.get(reqURL);
       context.commit("setHero", ...response.data.data.results);
     },
     addHeroToArr(context, payload) {
