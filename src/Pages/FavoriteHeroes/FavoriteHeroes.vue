@@ -7,7 +7,7 @@
       :name="hero.name"
       :desc="hero.description"
       :photo="hero.thumbnail.path"
-      @remove-favorite="deleteFromArr"
+      @remove-Fromfavorite="deleteFromLocalStorage"
     >
     </favorite-hero>
   </div>
@@ -24,11 +24,11 @@ export default {
   },
 
   methods: {
-    deleteFromArr(id) {
-      this.$store.dispatch("removeItem", id);
+    deleteFromLocalStorage(id) {
+      this.$store.dispatch("removeItem", id); // aby som mohol fungovať s navigáciou qby som nepoužíval len LS
       const helper = JSON.parse(localStorage.getItem("favoriteHeroes")); // zoberie všetky dáta z LocalStorage a da ich do pomocnej []
-      const newLocalStorage = helper.filter((hero) => hero.id !== id); // nájdem správne id a vyfiltrované dám do pola newLocalStorage
-      localStorage.setItem("favoriteHeroes", JSON.stringify(newLocalStorage)); // a pošelem aktuálny stav do LocalStorage
+      const filteredArray = helper.filter((hero) => hero.id !== id); // nájdem správne id a vyfiltrované dám do pola filteredArray
+      localStorage.setItem("favoriteHeroes", JSON.stringify(filteredArray)); // a pošelem aktuálny stav do LocalStorage
       this.upgradeUI();
     },
     upgradeUI() {
@@ -38,9 +38,7 @@ export default {
     },
     someFavoriteHeroes() {
       // ak niesú žiadny oblubený hrdinovia tak ma presmeruje na "/"
-      if (this.heroesFromStorage < 1) {
-        this.$router.replace("/");
-      }
+      if (this.heroesFromStorage < 1) this.$router.replace("/");
     },
   },
   mounted() {

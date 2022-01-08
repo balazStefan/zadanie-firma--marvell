@@ -5,8 +5,8 @@ import { LIMIT, API_URL } from "./constants.js";
 const store = createStore({
   state() {
     return {
-      items: [],
-      hero: [],
+      items: [], // sú potrebné obe ?
+      hero: [], // sú potrebné obe ?
       favoriteHeroes: JSON.parse(localStorage.getItem("favoriteHeroes")),
     };
   },

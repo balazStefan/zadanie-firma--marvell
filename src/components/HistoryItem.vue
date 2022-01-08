@@ -3,23 +3,23 @@
     class="hover:bg-gray-300 cursor-pointer flex justify-between w-96 min-w-min"
   >
     <p @click="loadHeroFromHistory" class="font-bolder pr-50 max-w-sm">
-      {{ queri }}
+      {{ query }}
     </p>
-    <button @click="deleteHistory" class="text-red-500 font-bold pr-2">
+    <button @click="deleteQueryFromHistory" class="text-red-500 font-bold pr-2">
       Delete
     </button>
   </div>
 </template>
 <script>
 export default {
-  props: ["queri"],
-  emits: ["delete-history", "load-fromHistory"],
+  props: ["query"],
+  emits: ["delete-history", "load-FromHistory"],
   methods: {
-    deleteHistory() {
-      this.$emit("delete-history", this.queri);
+    deleteQueryFromHistory() {
+      this.$emit("delete-query", this.query);
     },
     loadHeroFromHistory() {
-      this.$emit("load-fromHistory", this.queri);
+      this.$emit("load-FromHistory", this.query);
     },
   },
 };

@@ -15,14 +15,14 @@
         :id="item.id"
         :desc="item.description"
         :photo="item.thumbnail?.path + `/portrait_xlarge.jpg`"
-        @show-info="loadPage"
+        @show-preview="loadPage"
       ></hero-item>
     </ul>
   </div>
 </template>
 <script>
-import HeroItem from "./SearchItem.vue";
-import { mapGetters } from "vuex";
+import HeroItem from "./HeroPreview.vue";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   components: { HeroItem },
@@ -34,12 +34,10 @@ export default {
   },
 
   computed: {
-    // items() {
-    //   return this.$store.getters.items;
-    // },
     ...mapGetters(["items"]),
   },
   methods: {
+    // da do url id konkretneho hrdinu
     async loadPage(id) {
       try {
         await this.$store.dispatch("loadById", id);
@@ -47,11 +45,9 @@ export default {
       } catch (err) {
         this.error = err.message || "Failed to load Data";
       }
-      // da do url id konkretneho hrdinu
     },
-    resetUI() {
-      this.$store.dispatch("resetUI");
-    },
+    ...mapActions(["resetUI"]),
+
     handleError() {
       this.error = null;
     },

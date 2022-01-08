@@ -3,11 +3,11 @@
     <base-card>
       <main class="flex justify-center align-middle">
         <aside>
-          <h1 class="p-2.5 font-bold text-3xl">{{ getHero.name }}</h1>
+          <h1 class="p-2.5 font-bold text-3xl">{{ hero.name }}</h1>
           <p class="max-w-2xl p-2.5">
             {{
-              getHero.description.length > 1 // mohol by som dať aj getHero.description ale majú empty string a nič by nedávalo
-                ? getHero.description
+              hero.description.length > 1 // mohol by som dať aj getHero.description ale majú empty string a nič by nedávalo
+                ? hero.description
                 : "Daný hrdina bol tak cool, že nemá ani popis....a Ja musím písať takéto bľudy miesto toho.. 😪😪"
             }}
           </p>
@@ -37,6 +37,7 @@
 
 <script>
 import BaseCard from "./UI/BaseCard.vue";
+import { mapGetters } from "vuex";
 export default {
   components: { BaseCard },
   props: ["name", "photo", "desc"],
@@ -46,23 +47,24 @@ export default {
     };
   },
   computed: {
-    getHero() {
-      // dostanem name, id, desc a photo veľa hrdinov nemá photo alebo desc
-      return this.$store.getters.hero;
-    },
+    // getHero() {
+    // dostanem name, id, desc a photo veľa hrdinov nemá photo alebo desc
+    // return this.$store.getters.hero;
+    // },
+    ...mapGetters(["hero"]),
     getPhoto() {
-      return this.getHero.thumbnail.path + `/portrait_fantastic.jpg`;
+      return this.hero.thumbnail.path + `/portrait_fantastic.jpg`;
     },
   },
   methods: {
     changeStateofFavorite() {
       this.isFavorite = true;
-      this.$store.dispatch("addHeroToArr", this.getHero, this.getPhoto);
+      this.$store.dispatch("addHeroToArr", this.hero, this.getPhoto);
       this.$router.push("/favorite");
     },
-    UserClickedOk() {
-      this.isFavorite = false;
-    },
+    // userClickedOk() {
+    //   this.isFavorite = false;
+    // },
     backHome() {
       this.$router.push("/");
     },

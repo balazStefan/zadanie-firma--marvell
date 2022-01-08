@@ -22,8 +22,8 @@
         placeholder="Search..."
         v-model.trim="inputName"
         @click="showHistory"
-        @keyup="debounce(loadFromServer, 500)"
-        @change="debounce(addToStorage, 500)"
+        @keyup="debounce(loadDataFromApi, 500)"
+        @change="debounce(addToLocalStorage, 500)"
         class="relative"
       />
       <button
@@ -38,9 +38,9 @@
       <history-item
         v-for="item in storedQuries"
         :key="item.id"
-        :queri="item"
-        @delete-history="deleteFromStorage"
-        @load-fromHistory="loadByHistory"
+        :query="item"
+        @delete-query="deleteFromLocalStorage"
+        @load-FromHistory="loadDataViaHistory"
       >
       </history-item>
     </section>
@@ -49,6 +49,7 @@
 <script>
 import HistoryItem from "./HistoryItem.vue";
 import VueHelpers from "../debouncer";
+import { mapActions } from "vuex";
 export default {
   components: { HistoryItem },
   data() {
@@ -58,35 +59,39 @@ export default {
       storedQuries: [],
       isLoading: false,
       error: null,
-      history: false,
     };
   },
   mixins: [VueHelpers],
 
   methods: {
-    addToStorage() {
-      if (this.inputName.length > 0) {
-        this.storedQuries.push(this.inputName);
-        localStorage.setItem("arr", JSON.stringify(this.storedQuries));
+    addToLocalStorage() {
+      if (!this.inputName) return;
+      this.storedQuries.push(this.inputName);
+      localStorage.setItem(
+        "historyOfSearching",
+        JSON.stringify(this.storedQuries)
+      );
+    },
+    loadQueriesFromLocalStorage() {
+      this.storedQuries =
+        JSON.parse(localStorage.getItem("historyOfSearching")) || [];
+    },
+    async loadDataFromApi() {
+      if (!this.inputName) return;
+      try {
+        this.isLoading = true;
+        await this.$store.dispatch("loadByName", this.inputName);
+        this.isLoading = false;
+      } catch (err) {
+        this.isLoading = false;
+        this.error = err.message || "Failed to load data...";
       }
     },
-    loadQueriesFromStorage() {
-      this.storedQuries = JSON.parse(localStorage.getItem("arr")) || [];
-    },
-    async loadFromServer() {
-      if (this.inputName.length > 0)
-        try {
-          this.isLoading = true;
-          await this.$store.dispatch("loadByName", this.inputName);
-          this.isLoading = false;
-        } catch (err) {
-          this.isLoading = false;
-          this.error = err.message || "Failed to load Data";
-        }
-    },
-    async loadByHistory(id) {
+    async loadDataViaHistory(id) {
       try {
+        this.isLoading = true;
         await this.$store.dispatch("loadByName", id);
+        this.isLoading = false;
       } catch (err) {
         this.isLoading = false;
         this.error = err.message || "Something went wrong...";
@@ -96,23 +101,20 @@ export default {
       this.userSearching = !this.userSearching;
     },
 
-    deleteFromStorage(id) {
-      const helper = JSON.parse(localStorage.getItem("arr"));
-      const newStorage = helper.filter((item) => item !== id); // nájdem správne id a vyfiltrované dám do pola newLocalStorage
-      localStorage.setItem("arr", JSON.stringify(newStorage));
-      this.loadQueriesFromStorage();
+    deleteFromLocalStorage(id) {
+      // vymaže konkretnú query z LocalStorage
+      const helper = JSON.parse(localStorage.getItem("historyOfSearching"));
+      const newStorage = helper.filter((item) => item !== id);
+      localStorage.setItem("historyOfSearching", JSON.stringify(newStorage));
+      this.loadQueriesFromLocalStorage();
     },
-
     handleError() {
       this.error = null;
     },
-    resetUI() {
-      this.$store.dispatch("resetUI");
-    },
+    ...mapActions(["resetUI"]),
   },
   mounted() {
-    this.loadQueriesFromStorage();
-    // console.log();
+    this.loadQueriesFromLocalStorage();
   },
 };
 </script>
@@ -122,12 +124,6 @@ input {
   padding: 10px;
 }
 
-.prekrito {
-  position: absolute;
-  top: 100px;
-  left: 10px;
-  z-index: 10;
-}
 .positionOfbtn {
   margin-top: 3px;
   margin-left: 328px;
