@@ -8,24 +8,24 @@
       <p>{{ error }}</p>
     </base-dialog>
     <ul class="flex justify-evenly align-middle mt-14">
-      <hero-item
-        v-for="item in items"
-        :key="item.id"
-        :name="item.name"
-        :id="item.id"
-        :desc="item.description"
-        :photo="item.thumbnail?.path + `/portrait_xlarge.jpg`"
+      <hero-preview
+        v-for="hero in listOfHeroes"
+        :key="hero.id"
+        :name="hero.name"
+        :id="hero.id"
+        :desc="hero.description"
+        :photo="hero.thumbnail?.path + `/portrait_xlarge.jpg`"
         @show-preview="loadPage"
-      ></hero-item>
+      ></hero-preview>
     </ul>
   </div>
 </template>
 <script>
-import HeroItem from "./HeroPreview.vue";
+import HeroPreview from "./HeroPreview.vue";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
-  components: { HeroItem },
+  components: { HeroPreview },
   data() {
     return {
       isLoading: false,
@@ -34,13 +34,13 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["items"]),
+    ...mapGetters(["listOfHeroes"]),
   },
   methods: {
     // da do url id konkretneho hrdinu
     async loadPage(id) {
       try {
-        await this.$store.dispatch("loadById", id);
+        await this.$store.dispatch("loadHeroById", id);
         await this.$router.push("/" + id);
       } catch (err) {
         this.error = err.message || "Failed to load Data";

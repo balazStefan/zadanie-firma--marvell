@@ -3,13 +3,9 @@
     <base-card>
       <main class="flex justify-center align-middle">
         <aside>
-          <h1 class="p-2.5 font-bold text-3xl">{{ hero.name }}</h1>
+          <h1 class="p-2.5 font-bold text-3xl">{{ clickedHero.name }}</h1>
           <p class="max-w-2xl p-2.5">
-            {{
-              hero.description.length > 1 // mohol by som dať aj getHero.description ale majú empty string a nič by nedávalo
-                ? hero.description
-                : "Daný hrdina bol tak cool, že nemá ani popis....a Ja musím písať takéto bľudy miesto toho.. 😪😪"
-            }}
+            {{ heroDesc }}
           </p>
           <div class="p-2.5">
             <label for="isFavorite" class="cursor-pointer"
@@ -40,31 +36,35 @@ import BaseCard from "./UI/BaseCard.vue";
 import { mapGetters } from "vuex";
 export default {
   components: { BaseCard },
-  props: ["name", "photo", "desc"],
+
   data() {
     return {
       isFavorite: false,
     };
   },
+
   computed: {
-    // getHero() {
-    // dostanem name, id, desc a photo veľa hrdinov nemá photo alebo desc
-    // return this.$store.getters.hero;
-    // },
-    ...mapGetters(["hero"]),
+    ...mapGetters(["clickedHero"]),
+    heroDesc() {
+      return this.clickedHero?.description
+        ? this.clickedHero.description
+        : "Daný hrdina bol tak cool, že nemá ani popis....a Ja musím písať takéto bľudy miesto toho.. 😪😪";
+    },
     getPhoto() {
-      return this.hero.thumbnail.path + `/portrait_fantastic.jpg`;
+      return this.clickedHero?.thumbnail.path + `/portrait_fantastic.jpg`;
     },
   },
   methods: {
     changeStateofFavorite() {
       this.isFavorite = true;
-      this.$store.dispatch("addHeroToArr", this.hero, this.getPhoto);
+      this.$store.dispatch(
+        "addHeroToFavorite",
+        this.clickedHero,
+        this.getPhoto
+      );
       this.$router.push("/favorite");
     },
-    // userClickedOk() {
-    //   this.isFavorite = false;
-    // },
+
     backHome() {
       this.$router.push("/");
     },

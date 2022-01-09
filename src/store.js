@@ -5,33 +5,33 @@ import { LIMIT, API_URL } from "./constants.js";
 const store = createStore({
   state() {
     return {
-      items: [], // sú potrebné obe ?
-      hero: [], // sú potrebné obe ?
+      listOfHeroes: [], // sú potrebné obe ?
+      clickedHero: [], // sú potrebné obe ?
       favoriteHeroes: JSON.parse(localStorage.getItem("favoriteHeroes")),
     };
   },
   getters: {
-    items(state) {
-      return state.items;
+    listOfHeroes(state) {
+      return state.listOfHeroes;
     },
-    hero(state) {
-      return state.hero;
+    clickedHero(state) {
+      return state.clickedHero;
     },
     favoriteHeroes(state) {
       return state.favoriteHeroes;
     },
   },
   mutations: {
-    setItem(state, payload) {
-      state.items = payload;
+    setListOfHeroes(state, payload) {
+      state.listOfHeroes = payload;
     },
-    setHero(state, payload) {
-      state.hero = payload;
+    setClickedHero(state, payload) {
+      state.clickedHero = payload;
     },
-    addHeroToArr(state, payload) {
+    addHeroToFavorite(state, payload) {
       // ak už  bol pridaný hero do array aby neboli duplicity
       state.favoriteHeroes.find((hero) => hero.id === payload.id)
-        ? alert("nemožem pridať lebo tam už je ..") // poraď ako odtialto mam dať info na modal aby nebol ALERT
+        ? alert("nemožeš pridať lebo tam už je ..") // poraď ako odtialto mam dať info na modal aby nebol ALERT
         : state.favoriteHeroes.push(payload) &&
           localStorage.setItem(
             "favoriteHeroes",
@@ -39,32 +39,32 @@ const store = createStore({
           );
     },
 
-    removeItem(state, payload) {
+    removeFavoriteFromStorage(state, payload) {
       state.favoriteHeroes = state.favoriteHeroes.filter(
         (hero) => hero.id !== payload
       );
     },
     resetUI(state) {
       // po fetchi aby premazalo UI aj po zmene routs
-      state.items = [];
+      state.listOfHeroes = [];
     },
   },
   actions: {
-    async loadByName(context, payload) {
+    async loadHeroByName(context, payload) {
       const reqURL = `${API_URL}?nameStartsWith=${payload}&limit=${LIMIT}&apikey=${process.env.VUE_APP_PUBLIC_KEY}`;
       const response = await axios.get(reqURL);
-      context.commit("setItem", response.data.data.results); //
+      context.commit("setListOfHeroes", response.data.data.results); //
     },
-    async loadById(context, payload) {
+    async loadHeroById(context, payload) {
       const reqURL = `${API_URL}/${payload}?apikey=${process.env.VUE_APP_PUBLIC_KEY}`;
       const response = await axios.get(reqURL);
-      context.commit("setHero", ...response.data.data.results);
+      context.commit("setClickedHero", ...response.data.data.results);
     },
-    addHeroToArr(context, payload) {
-      context.commit("addHeroToArr", payload);
+    addHeroToFavorite(context, payload) {
+      context.commit("addHeroToFavorite", payload);
     },
-    removeItem(contex, payload) {
-      contex.commit("removeItem", payload);
+    removeFavoriteFromStorage(contex, payload) {
+      contex.commit("removeFavoriteFromStorage", payload);
     },
     resetUI(context) {
       context.commit("resetUI");

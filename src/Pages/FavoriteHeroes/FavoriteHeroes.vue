@@ -25,7 +25,8 @@ export default {
 
   methods: {
     deleteFromLocalStorage(id) {
-      this.$store.dispatch("removeItem", id); // aby som mohol fungovať s navigáciou qby som nepoužíval len LS
+      // zmen removeItem aby vypovedalo viac o sebe napr. removeFavoriteFromStorage
+      this.$store.dispatch("removeFavoriteFromStorage", id); // aby som mohol fungovať s navigáciou qby som nepoužíval len LS
       const helper = JSON.parse(localStorage.getItem("favoriteHeroes")); // zoberie všetky dáta z LocalStorage a da ich do pomocnej []
       const filteredArray = helper.filter((hero) => hero.id !== id); // nájdem správne id a vyfiltrované dám do pola filteredArray
       localStorage.setItem("favoriteHeroes", JSON.stringify(filteredArray)); // a pošelem aktuálny stav do LocalStorage

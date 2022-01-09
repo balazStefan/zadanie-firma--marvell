@@ -80,7 +80,7 @@ export default {
       if (!this.inputName) return;
       try {
         this.isLoading = true;
-        await this.$store.dispatch("loadByName", this.inputName);
+        await this.$store.dispatch("loadHeroByName", this.inputName);
         this.isLoading = false;
       } catch (err) {
         this.isLoading = false;
@@ -90,7 +90,7 @@ export default {
     async loadDataViaHistory(id) {
       try {
         this.isLoading = true;
-        await this.$store.dispatch("loadByName", id);
+        await this.$store.dispatch("loadHeroByName", id);
         this.isLoading = false;
       } catch (err) {
         this.isLoading = false;
